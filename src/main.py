@@ -38,24 +38,21 @@ class GridGame:
         self.running = True
         # Create a 2-dimensional NumPy array (GRID_SIZE x GRID_SIZE)
         self.grid = np.zeros((GRID_SIZE, GRID_SIZE), dtype=int)
-        # Mark the center area and the pool in the grid
-        self.mark_center_area()
-        self.mark_pool_area()
+        # Dictionary to hold area marking values
+        self.area_markings = {
+            'island': 1,
+            'pool': 2
+        }
+        # Mark the island area and the pool in the grid
+        self.mark_area(4, 127, 4, 127, self.area_markings['island'])  # Island
+        self.mark_area(104, 124, 35, 95, self.area_markings['pool'])    # Pool
 
-    def mark_center_area(self):
-        # Set the center area to 1 (the island)
-        for row in range(4, 127):
-            for col in range(4, 127):
+    def mark_area(self, row_start, row_end, col_start, col_end, mark_value):
+        """Marks an area in the grid with the specified value."""
+        for row in range(row_start, row_end):
+            for col in range(col_start, col_end):
                 if row < GRID_SIZE and col < GRID_SIZE:
-                    self.grid[row, col] = 1  # Mark the island
-
-    def mark_pool_area(self):
-        # Set the pool area to 2
-      
-        for row in range(104, 124):
-            for col in range(35, 95):
-                if row < GRID_SIZE and col < GRID_SIZE:
-                    self.grid[row, col] = 2  # Mark the pool
+                    self.grid[row, col] = mark_value  # Mark the specified area
 
     def handle_events(self):
         # Event handling loop
@@ -70,8 +67,8 @@ class GridGame:
                 row = pos[1] // (HEIGHT + MARGIN)
                 # Check if the click is within the grid boundaries
                 if row < GRID_SIZE and column < GRID_SIZE:
-                    # Set that location to one
-                    self.grid[row, column] = 1
+                    # Set that location to three
+                    self.grid[row, column] = 3
                     print("Click ", pos, "Grid coordinates: ", row, column)
 
     def draw(self):
@@ -81,9 +78,11 @@ class GridGame:
         for row in range(GRID_SIZE):
             for column in range(GRID_SIZE):
                 color = BLUE
-                if self.grid[row, column] == 1:
-                    color = BROWN  # Color the center area brown
-                elif self.grid[row, column] == 2:
+                if self.grid[row, column] == self.area_markings['island']:
+                    color = BROWN  # Color the island brown
+                if self.grid[row, column] == 3:
+                    color = BLACK
+                elif self.grid[row, column] == self.area_markings['pool']:
                     color = POOL_COLOR  # Color the pool cyan
                 pygame.draw.rect(screen,
                                  color,
