@@ -2,21 +2,19 @@ import pygame
 import sys
 import numpy as np  # Import NumPy
 
-# Grid basics on pygame http://programarcadegames.com/index.php?lang=en&chapter=array_backed_grids
-
 # Initialize Pygame
 pygame.init()
 
 # Constants
-SCREEN_WIDTH = 600
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 520
+SCREEN_HEIGHT = 520
 FPS = 60  # Frames per second
 
 # Grid constants
-WIDTH = 4
-HEIGHT = 4
+WIDTH = 3
+HEIGHT = 3
 MARGIN = 1
-GRID_SIZE = 120  # Define your grid size
+GRID_SIZE = 130  # Define your grid size (this should reflect your grid dimensions)
 
 # Define colors
 BLACK = (0, 0, 0)
@@ -25,15 +23,8 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
-CYAN = (0, 255, 255)
-MAGENTA = (255, 0, 255)
-GRAY = (128, 128, 128)
-DARK_GRAY = (50, 50, 50)
-LIGHT_GRAY = (211, 211, 211)
-ORANGE = (255, 165, 0)
-PURPLE = (128, 0, 128)
-BROWN = (165, 42, 42)
-PINK = (255, 192, 203)
+BROWN = (165, 42, 42)  # Brown color
+POOL_COLOR = (0, 255, 255)  # Cyan color for the pool
 
 # Set up the screen
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -47,8 +38,24 @@ class GridGame:
         self.running = True
         # Create a 2-dimensional NumPy array (GRID_SIZE x GRID_SIZE)
         self.grid = np.zeros((GRID_SIZE, GRID_SIZE), dtype=int)
-        # Initialize the grid with one cell set to one
-        self.grid[1, 5] = 1
+        # Mark the center area and the pool in the grid
+        self.mark_center_area()
+        self.mark_pool_area()
+
+    def mark_center_area(self):
+        # Set the center area to 1 (the island)
+        for row in range(4, 127):
+            for col in range(4, 127):
+                if row < GRID_SIZE and col < GRID_SIZE:
+                    self.grid[row, col] = 1  # Mark the island
+
+    def mark_pool_area(self):
+        # Set the pool area to 2
+      
+        for row in range(104, 124):
+            for col in range(35, 95):
+                if row < GRID_SIZE and col < GRID_SIZE:
+                    self.grid[row, col] = 2  # Mark the pool
 
     def handle_events(self):
         # Event handling loop
@@ -73,9 +80,11 @@ class GridGame:
         # Draw the grid
         for row in range(GRID_SIZE):
             for column in range(GRID_SIZE):
-                color = WHITE
+                color = BLUE
                 if self.grid[row, column] == 1:
-                    color = YELLOW
+                    color = BROWN  # Color the center area brown
+                elif self.grid[row, column] == 2:
+                    color = POOL_COLOR  # Color the pool cyan
                 pygame.draw.rect(screen,
                                  color,
                                  [(MARGIN + WIDTH) * column + MARGIN,
