@@ -1,23 +1,24 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import random
+import tkinter as tk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from island import Island
 from pool import Pool
 from oja import Oja
-import random
 from monkey import Monkey
 
 
 def draw_forest(ax, island_size):
-
     forest_radius = 40  # Define the radius of the forest
     forest_centerx = island_size / 2  # Center of the forest in the x-axis
     forest_centery = island_size / 5  # Place the forest near the bottom of the island
-    
+
     # Draw a green circular patch for the forest
     forest_circle = plt.Circle((forest_centerx, forest_centery), forest_radius, color='green', alpha=0.6)
     ax.add_patch(forest_circle)
     ax.text(forest_centerx, forest_centery, 'Metsä', color='white', ha='center', va='center', fontsize=10)
-    
+
     # Generate and draw monkeys in the forest
     monkeys = []
     for _ in range(20):
@@ -31,8 +32,14 @@ def draw_forest(ax, island_size):
         monkeys.append(monkey)  # Store the monkey in the list
         monkey.draw(ax)
 
+    return monkeys
+
 
 def main():
+    # Create the main window
+    root = tk.Tk()
+    root.title("Island with Monkeys")
+
     # Create island and pool objects
     island_size = 250
     island = Island(island_size)
@@ -65,10 +72,33 @@ def main():
     oja_kernesti.draw(ax)
 
     # Draw the forest with monkeys
-    draw_forest(ax, island_size)
+    monkeys = draw_forest(ax, island_size)
 
-    # Show the plot
-    plt.show()  # This line is essential to display the plot
+    # Create a canvas and add it to the Tkinter window
+    canvas = FigureCanvasTkAgg(fig, master=root)
+    canvas.draw()
+    canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+    # Function to handle button press
+    def on_button_press():
+        print("Button pressed")
+
+    # Create a button to trigger the function
+    button = tk.Button(root, text="Press Me!", command=on_button_press)
+    button.pack(side=tk.BOTTOM)
+
+    # Define what happens when the window is closed
+    def on_closing():
+        print("Closing the application...")
+        # Call this function to cleanly destroy the Tkinter window
+        root.quit()  # Exit the main loop
+        root.destroy()  # Close the window
+
+    # Set the protocol for closing the window
+    root.protocol("WM_DELETE_WINDOW", on_closing)
+
+    # Start the Tkinter main loop
+    root.mainloop()
 
 
 if __name__ == "__main__":
