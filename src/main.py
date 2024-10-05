@@ -19,7 +19,7 @@ def draw_forest(ax, island_size):
     # Draw a green circular patch for the forest
     forest_circle = plt.Circle((forest_centerx, forest_centery), forest_radius, color='green', alpha=0.6)
     ax.add_patch(forest_circle)
-    ax.text(forest_centerx, forest_centery, 'Forest', color='white', ha='center', va='center', fontsize=10)
+    ax.text(forest_centerx, forest_centery, 'Metsä', color='white', ha='center', va='center', fontsize=10)
     
 
 def main():
@@ -36,8 +36,9 @@ def main():
 
     # Create Oja objects for Ernesti and Kernesti with calculated extents
     oja_width = 1
-    oja_ernesti = Oja(oja_width, 100, pool_startx + 20, pool_starty + pool_height, "Ernestin oja")
-    oja_kernesti = Oja(oja_width, 100, pool_startx + 40, pool_starty + pool_height, "Kernestin oja")
+    oja_height = 100
+    oja_ernesti = Oja(oja_width, oja_height, pool_startx + 20, pool_starty + pool_height, "Ernestin oja")
+    oja_kernesti = Oja(oja_width, oja_height, pool_startx + 40, pool_starty + pool_height, "Kernestin oja")
 
     # Create a figure with a blue background
     fig, ax = plt.subplots(figsize=(6, 6), facecolor='blue')
