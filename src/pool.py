@@ -7,6 +7,7 @@ class Pool:
         self.height = height
         self.grid = np.empty((self.height, self.width))
         self.grid.fill(0)  # Fill the empty array with zeros
+        print(self.grid)
 
     def draw(self, extent):
         """Draws the pool on the plot."""
