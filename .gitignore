@@ -1,0 +1,27 @@
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+venv/
+
+# Pipenv specific files
+Pipfile
+Pipfile.lock
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# PyInstaller
+dist/
+build/
+
+# VS Code settings
+.vscode/
+
+# MacOS files
+.DS_Store
+
+# IDE settings (optional, e.g., for PyCharm)
+.idea/
