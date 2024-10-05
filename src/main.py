@@ -3,24 +3,34 @@ import numpy as np
 from island import Island
 from pool import Pool
 from oja import Oja
+import random
+from monkey import Monkey
+
 
 def draw_forest(ax, island_size):
-    """
-    Draw a green round forest at the bottom of the island.
-    
-    Parameters:
-    - ax: The axes on which to draw.
-    - island_size: The size of the island.
-    """
+
     forest_radius = 40  # Define the radius of the forest
-    forest_centerx = island_size/2  # Center of the forest in the x-axis
-    forest_centery = island_size/5  # Place the forest near the bottom of the island
+    forest_centerx = island_size / 2  # Center of the forest in the x-axis
+    forest_centery = island_size / 5  # Place the forest near the bottom of the island
     
     # Draw a green circular patch for the forest
     forest_circle = plt.Circle((forest_centerx, forest_centery), forest_radius, color='green', alpha=0.6)
     ax.add_patch(forest_circle)
     ax.text(forest_centerx, forest_centery, 'Metsä', color='white', ha='center', va='center', fontsize=10)
     
+    # Generate and draw monkeys in the forest
+    monkeys = []
+    for _ in range(20):
+        # Randomly place monkeys within the forest boundaries
+        angle = random.uniform(0, 2 * np.pi)
+        r = random.uniform(0, forest_radius)
+        monkey_x = forest_centerx + r * np.cos(angle) - 1  # Adjust position for the size of the monkey (2x2)
+        monkey_y = forest_centery + r * np.sin(angle) - 1
+
+        monkey = Monkey(monkey_x, monkey_y)
+        monkeys.append(monkey)  # Store the monkey in the list
+        monkey.draw(ax)
+
 
 def main():
     # Create island and pool objects
@@ -54,11 +64,12 @@ def main():
     oja_ernesti.draw(ax)  # Pass current axes to draw
     oja_kernesti.draw(ax)
 
-    # Draw the forest
+    # Draw the forest with monkeys
     draw_forest(ax, island_size)
 
     # Show the plot
     plt.show()  # This line is essential to display the plot
+
 
 if __name__ == "__main__":
     main()
