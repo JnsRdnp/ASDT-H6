@@ -1,29 +1,18 @@
-import matplotlib.pyplot as plt
-import numpy as np
+import pygame
 
-class Monkey:
-    def __init__(self, x, y):
-        self.x = x  # Current x position
-        self.y = y  # Current y position
-        self.size = 2  # Size of the monkey (2x2)
-        self.speed = 1  # Speed of movement per step
+class Monkey(pygame.sprite.Sprite):
 
-    def draw(self, ax):
-        """Draw the monkey on the provided axes."""
-        ax.add_patch(plt.Rectangle((self.x, self.y), self.size, self.size, color='brown'))
+    def __init__(self, width, height, location):
+        pygame.sprite.Sprite.__init__(self)  # Call Sprite initializer
+        self.image = pygame.image.load("./assets/apina.png")
+        self.resized_image = pygame.transform.scale(self.image, (width, height))
 
-    def move(self, target_x, target_y):
-        """Move the monkey incrementally towards a target position."""
-        # Calculate the distance to the target
-        dx = target_x - self.x
-        dy = target_y - self.y
-        distance = np.hypot(dx, dy)  # Calculate the distance
+        self.rect = self.resized_image.get_rect()
+        self.rect.left, self.rect.top = location
 
-        if distance > 0:  # Ensure that the monkey has not reached the target
-            # Normalize the direction vector
-            dx /= distance
-            dy /= distance
-
-            # Move the monkey in the direction of the target, scaled by the speed
-            self.x += dx * self.speed
-            self.y += dy * self.speed
+    def draw(self, screen):
+        # Create a white surface to draw on
+        white_surface = pygame.Surface(self.rect.size)
+        white_surface.fill((255, 255, 255))  # Fill the surface with white
+        screen.blit(white_surface, self.rect)  # Draw the white surface first
+        screen.blit(self.resized_image, self.rect)  # Then draw the monkey image on top
