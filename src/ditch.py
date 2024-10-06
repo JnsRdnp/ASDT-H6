@@ -9,6 +9,8 @@ class Ditch(pygame.sprite.Sprite):
         self.height_units = distance  # Height in units
         self.name = name
 
+        ## Reserved indexes that are worked on already?
+
         self.distancediv100 = distance/100
         print("Distance divided by 100: ", self.distancediv100)
 

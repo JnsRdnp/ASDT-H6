@@ -1,4 +1,6 @@
 import pygame
+import time
+import threading
 
 class Monkey(pygame.sprite.Sprite):
 
@@ -13,6 +15,8 @@ class Monkey(pygame.sprite.Sprite):
         self.current_index = None
         self.font = pygame.font.SysFont(None, 24)  # Set up the font for rendering text
 
+        self.kaivuu_kahva = None
+
     def draw(self, screen):
         # Draw the monkey image
         screen.blit(self.resized_image, self.rect)
@@ -24,12 +28,20 @@ class Monkey(pygame.sprite.Sprite):
             text_rect = text_surface.get_rect(center=(self.rect.centerx, self.rect.bottom + 10))  # Position below the monkey
             screen.blit(text_surface, text_rect)
 
+    def dig(self):
+        for i in range(10):
+            print("Apina kaivaa...")
+            time.sleep(0.5)
+
+
     def move_to_last(self, Ditch):
         """Move the monkey to the target position."""
         self.target_location, self.current_index=self.get_last_ditch_position(Ditch)
         
         self.rect.bottomleft = self.target_location
         print("Apina liikkui tähän: ", self.rect.topleft)
+
+        self.kaivuu_kahva = threading.Thread(target=self.dig)
 
     def get_first_ditch_position(self, ditch):
         """Find the first available '1' in the ditch matrix and return its position."""

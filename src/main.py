@@ -1,5 +1,6 @@
 import pygame
 import sys
+import threading
 from island import Island
 from pool import Pool
 from ditch import Ditch
@@ -7,8 +8,10 @@ from forest import Forest
 from monkey import Monkey
 from button import Button
 
+
 monkeys = []
 monkeys_ernesti = []
+ernesti_kaivuu_kahva = None
 
 # Game class
 class Game:
@@ -45,6 +48,8 @@ class Game:
         # Napit
         self.Nappi_ernesti_kutsu = Button(self.black,10,500,20,"Ernesti hae apina töihin")
 
+        self.Nappi_ernesti_kaiva = Button(self.black,10,550,20, "Kaiva apina")
+
         self.create_monkeys()
 
     def create_monkeys(self):
@@ -65,6 +70,7 @@ class Game:
 
     def process_input(self):
         # Event handling
+        global ernesti_apina_kaivuu_kahva
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
@@ -76,11 +82,21 @@ class Game:
                     print("Apina hommiin stna")
                     ## MOVE ONE MONKEY TO Oja_Ernesti
                     if monkeys:
-                        # Get the first available monkey
-                        moving_monkey = monkeys.pop(0)  # Remove it from the list
+                        # Otetaan ensimmäinen apina
+                        moving_monkey = monkeys.pop(0)  # Otetaan pois listasta ja siirretään ernestin listaan
                         monkeys_ernesti.append(moving_monkey)
-                        # Get the first (last in matrix) available position in the ditch
-                        moving_monkey.move_to_last(self.Oja_Ernesti)
+                        # moving_monkey.move_to_last(self.Oja_Ernesti)
+
+                        threading.Thread(target= moving_monkey.move_to_last, args=(self.Oja_Ernesti,)).start()
+                        
+                        # ernesti_apina_kaivuu_kahva = threading.Thread(target=moving_monkey.dig)
+
+                if self.Nappi_ernesti_kaiva.button_rect.collidepoint(mouse_pos):
+                    # ernesti_apina_kaivuu_kahva.start()
+                    if monkeys_ernesti:
+                        digging_monkey = monkeys_ernesti[0]
+                        digging_monkey.kaivuu_kahva.start()
+
 
 
 
@@ -97,6 +113,7 @@ class Game:
         self.Oja_Kernesti.draw(self.screen)
         self.Metsa.draw(self.screen)
         self.Nappi_ernesti_kutsu.draw(self.screen)
+        self.Nappi_ernesti_kaiva.draw(self.screen)
 
         for monkey in monkeys:
             monkey.draw(self.screen) 
