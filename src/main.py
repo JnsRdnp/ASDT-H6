@@ -1,6 +1,7 @@
 import pygame
 import sys
 import threading
+import numpy as np
 from island import Island
 from pool import Pool
 from ditch import Ditch
@@ -54,6 +55,8 @@ class Game:
         self.Nappi_kernesti_kutsu = Button(self.black,500,500,20,"Kernesti hae apina töihin")
 
         self.Nappi_kernesti_kaiva = Button(self.black,500,550,20, "Kaiva kernestin apina")
+
+        self.Nappi_tayta_ojat = Button(self.black,self.width/3,550,20,"Täytä ojat")
 
         self.create_monkeys()
 
@@ -122,6 +125,12 @@ class Game:
                             if monkey.apina_kaivaa == False and monkey.kaivuu_kahva != None:
                                 monkey.kaivuu_kahva.start()
 
+                if self.Nappi_tayta_ojat.button_rect.collidepoint(mouse_pos):
+                    # Fill both matrices with ones
+                    self.Oja_Ernesti.ditch_matrix.fill(1)  # Use fill to set all elements to 1
+                    self.Oja_Kernesti.ditch_matrix.fill(1)  # Use fill to set all elements to 1
+
+
 
     def update(self):
         # Update game logic
@@ -139,6 +148,7 @@ class Game:
         self.Nappi_ernesti_kaiva.draw(self.screen)
         self.Nappi_kernesti_kutsu.draw(self.screen)
         self.Nappi_kernesti_kaiva.draw(self.screen)
+        self.Nappi_tayta_ojat.draw(self.screen)
 
 
         for monkey in monkeys:
