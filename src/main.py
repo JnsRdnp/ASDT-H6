@@ -89,6 +89,15 @@ class Game:
             if event.type == pygame.QUIT:
                 self.running[0] = False
 
+
+                # Clear sleep events to not get stuck
+                for monkey in monkeys_ernesti:
+                    monkey.sleep_event.clear()
+
+                for monkey in monkeys_kernesti:
+                    monkey.sleep_event.clear()
+
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = event.pos  # gets mouse position
 
