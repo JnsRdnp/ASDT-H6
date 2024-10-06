@@ -31,11 +31,11 @@ class Game:
 
         # Init objects
         self.Saari = Island(600,500,(self.width/7,50))
-        self.Allas = Pool(self.Saari.rect.centerx-100,self.Saari.rect.centery)
+        self.Allas = Pool(self.Saari.rect.centerx-100,self.Saari.rect.top+200)
 
         # Lasketaan matka 
         self.pool_northside_distance = self.Allas.rect.top - self.Saari.rect.top
-        
+        print("distance",self.pool_northside_distance)
         # Ojat
         self.Oja_Ernesti = Ditch(self.Allas.rect.centerx-70,self.Saari.rect.top, self.pool_northside_distance, "Ernestin oja")
         self.Oja_Kernesti = Ditch(self.Allas.rect.centerx+60,self.Saari.rect.top, self.pool_northside_distance, "Kernestin Oja")
@@ -70,11 +70,10 @@ class Game:
                     y = ditch.rect.y + row * ditch.ppu
                     print("First ditch pos: ", x,y)
                     return (x, y)
-        return None  # If no position is founds
+        return None  # If no position is founds 
     
     def get_last_ditch_position(self, ditch):
-
-        """Find the last available '1' in the ditch matrix and return its position."""
+        """Find the last available '1' in the ditch matrix and return its position and matrix index."""
         # Reverse iteration: Start from the last row and last column
         for row in range(ditch.ditch_matrix.shape[0] - 1, -1, -1):
             for col in range(ditch.ditch_matrix.shape[1] - 1, -1, -1):
@@ -83,8 +82,8 @@ class Game:
                     x = ditch.rect.x + col * ditch.ppu
                     y = ditch.rect.y + row * ditch.ppu
                     print("Last ditch pos: ", x, y)
-                    return (x, y)
-        return None  # If no position is found
+                    return (x, y), (row, col)  # Return both position and matrix index
+        return None, None  # If no position is found
 
 
     def process_input(self):
@@ -98,17 +97,16 @@ class Game:
                 # checks if mouse position is over the button
                 if self.Nappi_ernesti_kutsu.button_rect.collidepoint(mouse_pos):
                     print("Apina hommiin stna")
-
                     ## MOVE ONE MONKEY TO Oja_Ernesti
                     if monkeys:
                         # Get the first available monkey
                         moving_monkey = monkeys.pop(0)  # Remove it from the list
-
                         monkeys_ernesti.append(moving_monkey)
-                        # Get the first available position in the ditch
-                        target_position = self.get_last_ditch_position(self.Oja_Ernesti)
-                        if target_position:
-                            moving_monkey.move(target_position)  # Move the monkey to the ditch
+                        # Get the first (last in matrix) available position in the ditch
+                        last_position, last_index = self.get_last_ditch_position(self.Oja_Ernesti)
+
+                        if last_position and last_index:
+                            moving_monkey.move(last_position, last_index)
 
 
 

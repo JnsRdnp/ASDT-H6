@@ -5,7 +5,7 @@ class Ditch(pygame.sprite.Sprite):
     def __init__(self, x, y, distance, name, ppu=1):
         super().__init__()
         self.ppu = ppu  # Pixels per unit
-        self.width_units = 3  # Width in units
+        self.width_units = 1  # Width in units
         self.height_units = distance  # Height in units
         self.name = name
 
