@@ -5,6 +5,7 @@ from pool import Pool
 from ditch import Ditch
 from forest import Forest
 from monkey import Monkey
+from button import Button
 
 monkeys = []
 
@@ -40,18 +41,21 @@ class Game:
 
         self.Metsa = Forest(200,100,(self.Saari.rect.centerx-100,self.Saari.rect.centerx-10))
 
+        # Napit
+        self.Nappi_ernesti_kutsu = Button(self.black,10,500,20,"Ernesti hae apina töihin")
+
         self.create_monkeys()
 
     def create_monkeys(self):
         global monkeys
         monkey_start_x = self.Metsa.rect.left + 10  # Starting position x
         monkey_start_y = self.Metsa.rect.top + 10  # Starting position y
-        monkey_spacing = 20 # Space between monkeys
+        monkey_spacing = 25 # Space between monkeys
 
         for i in range(20):  # Create 20 monkeys
             x = monkey_start_x + (i % 5) * monkey_spacing  # Arrange in 5 columns
             y = monkey_start_y + (i // 5) * monkey_spacing  # Arrange in rows
-            monkey = Monkey(20,20,(x, y))  # Instantiate a Monkey object
+            monkey = Monkey(30,30,(x, y))  # Instantiate a Monkey object
             monkeys.append(monkey)  # Add to the list of monkeys
 
 
@@ -60,6 +64,12 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = event.pos  # gets mouse position
+
+                # checks if mouse position is over the button
+                if self.Nappi_ernesti_kutsu.button_rect.collidepoint(mouse_pos):
+                    print("Apina hommiin stna")
 
     def update(self):
         # Update game logic
@@ -73,6 +83,7 @@ class Game:
         self.Oja_Ernesti.draw(self.screen)
         self.Oja_Kernesti.draw(self.screen)
         self.Metsa.draw(self.screen)
+        self.Nappi_ernesti_kutsu.draw(self.screen)
 
         for monkey in monkeys:
             monkey.draw(self.screen)  # Ensure that the Monkey class has a draw method
