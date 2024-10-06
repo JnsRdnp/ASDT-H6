@@ -8,6 +8,7 @@ from monkey import Monkey
 from button import Button
 
 monkeys = []
+monkeys_ernesti = []
 
 # Game class
 class Game:
@@ -48,6 +49,7 @@ class Game:
 
     def create_monkeys(self):
         global monkeys
+        global monkeys_ernesti
         monkey_start_x = self.Metsa.rect.left + 10  # Starting position x
         monkey_start_y = self.Metsa.rect.top + 10  # Starting position y
         monkey_spacing = 25 # Space between monkeys
@@ -57,6 +59,32 @@ class Game:
             y = monkey_start_y + (i // 5) * monkey_spacing  # Arrange in rows
             monkey = Monkey(30,30,(x, y))  # Instantiate a Monkey object
             monkeys.append(monkey)  # Add to the list of monkeys
+
+    def get_first_ditch_position(self, ditch):
+        """Find the first available '1' in the ditch matrix and return its position."""
+        for row in range(ditch.ditch_matrix.shape[0]):
+            for col in range(ditch.ditch_matrix.shape[1]):
+                if ditch.ditch_matrix[row, col] == 1:  # Find the first 1
+                    # Calculate world coordinates of the matrix position
+                    x = ditch.rect.x + col * ditch.ppu
+                    y = ditch.rect.y + row * ditch.ppu
+                    print("First ditch pos: ", x,y)
+                    return (x, y)
+        return None  # If no position is founds
+    
+    def get_last_ditch_position(self, ditch):
+
+        """Find the last available '1' in the ditch matrix and return its position."""
+        # Reverse iteration: Start from the last row and last column
+        for row in range(ditch.ditch_matrix.shape[0] - 1, -1, -1):
+            for col in range(ditch.ditch_matrix.shape[1] - 1, -1, -1):
+                if ditch.ditch_matrix[row, col] == 1:  # Find the last 1
+                    # Calculate world coordinates of the matrix position
+                    x = ditch.rect.x + col * ditch.ppu
+                    y = ditch.rect.y + row * ditch.ppu
+                    print("Last ditch pos: ", x, y)
+                    return (x, y)
+        return None  # If no position is found
 
 
     def process_input(self):
@@ -70,6 +98,19 @@ class Game:
                 # checks if mouse position is over the button
                 if self.Nappi_ernesti_kutsu.button_rect.collidepoint(mouse_pos):
                     print("Apina hommiin stna")
+
+                    ## MOVE ONE MONKEY TO Oja_Ernesti
+                    if monkeys:
+                        # Get the first available monkey
+                        moving_monkey = monkeys.pop(0)  # Remove it from the list
+
+                        monkeys_ernesti.append(moving_monkey)
+                        # Get the first available position in the ditch
+                        target_position = self.get_last_ditch_position(self.Oja_Ernesti)
+                        if target_position:
+                            moving_monkey.move(target_position)  # Move the monkey to the ditch
+
+
 
     def update(self):
         # Update game logic
@@ -86,7 +127,10 @@ class Game:
         self.Nappi_ernesti_kutsu.draw(self.screen)
 
         for monkey in monkeys:
-            monkey.draw(self.screen)  # Ensure that the Monkey class has a draw method
+            monkey.draw(self.screen) 
+
+        for monkey in monkeys_ernesti:
+            monkey.draw(self.screen)
 
         # Update the display
         pygame.display.flip()

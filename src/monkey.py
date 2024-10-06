@@ -9,6 +9,15 @@ class Monkey(pygame.sprite.Sprite):
 
         self.rect = self.resized_image.get_rect()
         self.rect.left, self.rect.top = location
+        
 
     def draw(self, screen):
         screen.blit(self.resized_image, self.rect)
+
+    def move(self, target_position):
+        """Move the monkey to the target position."""
+        self.rect.topleft = target_position
+        print("APina liikkui tähän: ",self.rect.topleft)
+
+    def dig(self, matrix):
+        pass

@@ -9,9 +9,12 @@ class Ditch(pygame.sprite.Sprite):
         self.height_units = distance  # Height in units
         self.name = name
 
+        self.distancediv100 = distance/100
+        print("Distance divided by 100: ", self.distancediv100)
+
         # Create a 20x6 matrix for the ditch
-        self.pool_matrix = np.ones((self.height_units, self.width_units), dtype=int)
-        print(self.pool_matrix)
+        self.ditch_matrix = np.ones((self.height_units, self.width_units), dtype=int)
+        print(self.ditch_matrix)
 
         # Define ditch color
         self.pool_color = (255, 255, 255)  # White
@@ -24,9 +27,9 @@ class Ditch(pygame.sprite.Sprite):
 
     def draw(self, screen):
         # Draw the ditch based on the matrix
-        for row in range(self.pool_matrix.shape[0]):
-            for col in range(self.pool_matrix.shape[1]):
-                if self.pool_matrix[row, col] == 1:  # Check if the matrix value is 1
+        for row in range(self.ditch_matrix.shape[0]):
+            for col in range(self.ditch_matrix.shape[1]):
+                if self.ditch_matrix[row, col] == 1:  # Check if the matrix value is 1
                     pygame.draw.rect(screen, self.pool_color,
                                      (self.rect.x + col * self.ppu,
                                       self.rect.y + row * self.ppu,
