@@ -3,6 +3,7 @@ import sys
 from island import Island
 from pool import Pool
 from ditch import Ditch
+from forest import Forest
 
 
 
@@ -28,12 +29,15 @@ class Game:
         # Init objects
         self.Saari = Island(600,500,(self.width/7,50))
         self.Allas = Pool(self.Saari.rect.centerx-100,self.Saari.rect.centery)
+
+        # Lasketaan matka 
         self.pool_northside_distance = self.Allas.rect.top - self.Saari.rect.top
         
-        self.Oja_Ernesti = Ditch(self.Allas.rect.centerx-70,self.Saari.rect.top, self.pool_northside_distance)
-        print(self.pool_northside_distance)
+        # Ojat
+        self.Oja_Ernesti = Ditch(self.Allas.rect.centerx-70,self.Saari.rect.top, self.pool_northside_distance, "Ernestin oja")
+        self.Oja_Kernesti = Ditch(self.Allas.rect.centerx+60,self.Saari.rect.top, self.pool_northside_distance, "Kernestin Oja")
 
-        self.Oja_Kernesti = Ditch(self.Allas.rect.centerx+60,self.Saari.rect.top, self.pool_northside_distance)
+        self.Metsa = Forest(200,100,(self.Saari.rect.centerx-100,self.Saari.rect.centerx-10))
 
 
     def process_input(self):
@@ -53,7 +57,8 @@ class Game:
         self.Allas.draw(self.screen)
         self.Oja_Ernesti.draw(self.screen)
         self.Oja_Kernesti.draw(self.screen)
-
+        self.Metsa.draw(self.screen)
+    
         # Draw game objects here
         # Example: pygame.draw.rect(self.screen, self.black, (50, 50, 100, 100))
 
