@@ -35,6 +35,10 @@ class Monkey(pygame.sprite.Sprite):
         self.sleep_event.set()  # Initially allow sleeping
 
 
+        pygame.mixer.init()
+        self.sand_sound = pygame.mixer.Sound("./assets/sand.wav")  # Replace with your beep sound file path
+
+
     def draw(self, screen):
         # Draw the monkey image
         screen.blit(self.resized_image, self.rect)
@@ -57,7 +61,7 @@ class Monkey(pygame.sprite.Sprite):
         if start_col is None and start_row is None:
             # Start digging normally from the last available positions
             while self.apina_kaivaa and self.main_running[0]:
-                # Find the indices of the last four '1's
+                # Find the indices of all '1's
                 indices = np.argwhere(Ditch.ditch_matrix == 1)  # Get indices of all '1's
                 
                 if len(indices) >= 4:  # Ensure there are at least four '1's to change
@@ -68,8 +72,9 @@ class Monkey(pygame.sprite.Sprite):
                     time.sleep(self.time_to_dig)  # Wait for the specified digging time
                     for row, col in last_four_indices:
                         Ditch.ditch_matrix[row, col] -= 1  # Change value to one less
-
-                    print(f"Digging at positions: {last_four_indices.tolist()}")  # Print the positions dug
+                        self.sand_sound.play()
+                        
+                    print(f"Digging at positions: {last_four_indices}")  # Print the positions dug
                     
                     # Update the current index to the last position dug
                     self.current_index = (last_four_indices[-1][0], last_four_indices[-1][1])
@@ -85,49 +90,10 @@ class Monkey(pygame.sprite.Sprite):
             print("Updated ditch matrix:")
             print(Ditch.ditch_matrix)
         else:
-            # Start digging from the specified starting position
-            indices_to_dig = []
-
-            # Get indices of all '1's in the specified column
-            column_indices = np.argwhere(Ditch.ditch_matrix[:, start_col] == 1)
-
-            # Check if the specified starting row is valid for digging
-            if start_row in column_indices[:, 0]:  # Ensure the starting position is a '1'
-                indices_to_dig.append((start_row, start_col))  # Add the starting position
-                
-                # Collect the three indices above the starting position
-                for i in range(1, 4):  # Get up to three indices above the starting position
-                    above_row = start_row - i
-                    if above_row >= 0 and (above_row, start_col) in column_indices.tolist():
-                        indices_to_dig.append((above_row, start_col))
-
+            # Start digging from specified start_col and start_row
             while self.apina_kaivaa and self.main_running[0]:
-                # Decrement the values at these indices by 1
-                time.sleep(self.time_to_dig)  # Wait for the specified digging time
+                pass
                 
-                # Store positions being dug
-                dug_positions = []
-                for row, col in indices_to_dig:
-                    if Ditch.ditch_matrix[row, col] > 0:  # Ensure the position is diggable
-                        Ditch.ditch_matrix[row, col] -= 1  # Change value to one less
-                        dug_positions.append((row, col))  # Track the position dug
-                        print(f"Digging at position: ({row}, {col})")  # Print the position dug
-                        print(Ditch.ditch_matrix)
-                        
-                        # Update the current index to the last position dug
-                        self.current_index = (row, col)
-
-                # Print the positions dug
-                if dug_positions:
-                    print(f"Digging at positions: {dug_positions}")  # Print the positions dug
-
-                # Double the time to dig for the next iteration
-                self.time_to_dig *= self.stamina_multiplier
-                # self.update_position(Ditch)  # Update position after digging
-
-            print("Updated ditch matrix:")
-            print(Ditch.ditch_matrix)
-
 
     def random_dig(self, Ditch):
         # Get the number of rows and columns in the ditch matrix
