@@ -48,15 +48,17 @@ class Game:
         self.Metsa = Forest(200,100,(self.Saari.rect.centerx-100,self.Saari.rect.centerx-10))
 
         # Napit
-        self.Nappi_ernesti_kutsu = Button(self.black,10,500,20,"Ernesti hae apina töihin")
+        self.Nappi_ernesti_kutsu = Button(self.black,10,450,20,"Ernesti hae apina töihin")
 
-        self.Nappi_ernesti_kaiva = Button(self.black,10,550,20, "Kaiva ernestin apina")
+        self.Nappi_ernesti_kaiva = Button(self.black,10,500,20, "Kaiva ernestin apina")
 
-        self.Nappi_kernesti_kutsu = Button(self.black,500,500,20,"Kernesti hae apina töihin")
+        self.Nappi_kernesti_kutsu = Button(self.black,500,450,20,"Kernesti hae apina töihin")
 
-        self.Nappi_kernesti_kaiva = Button(self.black,500,550,20, "Kaiva kernestin apina")
+        self.Nappi_kernesti_kaiva = Button(self.black,500,500,20, "Kaiva kernestin apina")
 
         self.Nappi_tayta_ojat = Button(self.black,self.width/3,550,20,"Täytä ojat")
+
+        self.Nappi_kernesti10_apinaa = Button(self.black,10,550,20,"1+9 Apinaa töihin")
 
         self.create_monkeys()
 
@@ -139,6 +141,14 @@ class Game:
                     self.Oja_Ernesti.ditch_matrix.fill(1)  # Use fill to set all elements to 1
                     self.Oja_Kernesti.ditch_matrix.fill(1)  # Use fill to set all elements to 1
 
+                if self.Nappi_kernesti10_apinaa.button_rect.collidepoint(mouse_pos):
+                    if monkeys:
+                        # Otetaan ensimmäinen apina ja sijoitetaan satunnaiseen paikkaan
+                        moving_monkey = monkeys.pop(0)  # Otetaan pois listasta ja siirretään ernestin listaan
+                        monkeys_kernesti.append(moving_monkey)
+                        moving_monkey.random_dig(self.Oja_Ernesti)
+                    
+
 
 
     def update(self):
@@ -158,6 +168,7 @@ class Game:
         self.Nappi_kernesti_kutsu.draw(self.screen)
         self.Nappi_kernesti_kaiva.draw(self.screen)
         self.Nappi_tayta_ojat.draw(self.screen)
+        self.Nappi_kernesti10_apinaa.draw(self.screen)
 
 
         for monkey in monkeys:

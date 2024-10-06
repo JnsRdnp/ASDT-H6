@@ -2,6 +2,7 @@ import pygame
 import time
 import threading
 import numpy as np
+import random
 
 class Monkey(pygame.sprite.Sprite):
 
@@ -24,11 +25,14 @@ class Monkey(pygame.sprite.Sprite):
         self.ditch = None
         
         
-
         if side == "Left":
             self.sidex = 30
         else:
             self.sidex = 0
+
+
+        self.sleep_event = threading.Event()  # Create an event for controlling sleep
+        self.sleep_event.set()  # Initially allow sleeping
 
 
     def draw(self, screen):
@@ -42,7 +46,7 @@ class Monkey(pygame.sprite.Sprite):
         #     text_rect = text_surface.get_rect(center=(self.rect.centerx, self.rect.bottom + 10))  # Position below the monkey
         #     screen.blit(text_surface, text_rect)
 
-    def dig(self, Ditch):
+    def dig(self, Ditch, start=True):
         self.apina_kaivaa = True
         self.time_to_dig = 1  # Initial time in seconds between digs
         self.stamina_multiplier = 2  # Time to dig multiplies by 2 every time
@@ -81,12 +85,29 @@ class Monkey(pygame.sprite.Sprite):
         print("Updated ditch matrix:")
         print(Ditch.ditch_matrix)
 
-            
-    def update_position(self, Ditch):
-        self.ditch = self.get_last_ditch_position(Ditch)
-        self.target_location, self.current_index = self.ditch
+    def random_dig(self, Ditch):
+        # Get the number of rows and columns in the ditch matrix
+        num_rows, num_cols = Ditch.ditch_matrix.shape  # Should be (200, n)
 
-        self.rect.bottomleft = (self.target_location[0]-self.sidex,self.target_location[1]+10)
+
+        odd_row = random.randint(1, (num_rows // 2) - 1) * 2 + 1  # Random odd row index
+        col = 0
+
+        print("rows: ", odd_row, "cols: ", num_cols)
+        self.update_position(Ditch, odd_row, col)
+
+
+        
+            
+    def update_position(self, Ditch, start_col=None, start_row=None):
+        if start_col == None:
+            self.ditch = self.get_last_ditch_position(Ditch)
+            self.target_location, self.current_index = self.ditch
+            self.rect.bottomleft = (self.target_location[0]-self.sidex,self.target_location[1]+10)
+        else:
+            self.ditch_start = self.get_ditch_position(Ditch,start_col,start_row)
+            print("self.ditch_start: ", self.ditch_start)
+            self.rect.bottomleft = (self.ditch_start[0]-self.sidex, self.ditch_start[1]+10)
 
 
     def move_to_last(self, Ditch):
@@ -120,6 +141,14 @@ class Monkey(pygame.sprite.Sprite):
         # Start the digging thread after reaching the target
         self.kaivuu_kahva = threading.Thread(target=self.dig, args=(Ditch,))
 
+    def get_ditch_position(self, ditch, row, col):
+        """
+        Calculate the world coordinates of the given row and column in the ditch matrix.
+        """
+        x = ditch.rect.x + col * ditch.ppu  # x-coordinate based on column
+        y = ditch.rect.y + row * ditch.ppu  # y-coordinate based on row
+        print(f"Ditch position for matrix (row: {row}, col: {col}): ({x}, {y})")
+        return (x, y)  # Return the position on the screen
 
     
     def get_last_ditch_position(self, ditch):

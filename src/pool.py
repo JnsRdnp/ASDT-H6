@@ -23,7 +23,7 @@ class Pool(pygame.sprite.Sprite):
         # Draw the pool based on the matrix
         for row in range(self.pool_matrix.shape[0]):
             for col in range(self.pool_matrix.shape[1]):
-                if self.pool_matrix[row, col] == 0:  # Check if the matrix value is 1
+                if self.pool_matrix[row, col] == 1:  # Check if the matrix value is 1
                     pygame.draw.rect(screen, self.pool_color,
                                      (self.rect.x + col * self.ppu,
                                       self.rect.y + row * self.ppu,
