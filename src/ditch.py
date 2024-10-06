@@ -5,7 +5,7 @@ class Ditch(pygame.sprite.Sprite):
     def __init__(self, x, y, distance, name, ppu=1):
         super().__init__()
         self.ppu = ppu  # Pixels per unit
-        self.width_units = 1  # Width in units
+        self.width_units = 2  # Width in units
         self.height_units = distance  # Height in units
         self.name = name
 
@@ -21,6 +21,8 @@ class Ditch(pygame.sprite.Sprite):
         # Define ditch color
         self.pool_color = (255, 255, 255)  # White
 
+        self.pool_color_digged = (0, 0, 0) # Black
+ 
         # Position and size
         self.rect = pygame.Rect(x, y, self.width_units * self.ppu, self.height_units * self.ppu)
 
@@ -33,6 +35,11 @@ class Ditch(pygame.sprite.Sprite):
             for col in range(self.ditch_matrix.shape[1]):
                 if self.ditch_matrix[row, col] == 1:  # Check if the matrix value is 1
                     pygame.draw.rect(screen, self.pool_color,
+                                     (self.rect.x + col * self.ppu,
+                                      self.rect.y + row * self.ppu,
+                                      self.ppu, self.ppu))
+                if self.ditch_matrix[row, col] == 0:  # Check if the matrix value is 0
+                    pygame.draw.rect(screen, self.pool_color_digged,
                                      (self.rect.x + col * self.ppu,
                                       self.rect.y + row * self.ppu,
                                       self.ppu, self.ppu))

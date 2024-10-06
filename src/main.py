@@ -30,6 +30,7 @@ class Game:
         self.blue = (0, 0, 255)  # Define blue color
 
         # Game state variables
+        global running
         self.running = True
 
         # Init objects
@@ -85,17 +86,15 @@ class Game:
                         # Otetaan ensimmäinen apina
                         moving_monkey = monkeys.pop(0)  # Otetaan pois listasta ja siirretään ernestin listaan
                         monkeys_ernesti.append(moving_monkey)
-                        # moving_monkey.move_to_last(self.Oja_Ernesti)
-
                         threading.Thread(target= moving_monkey.move_to_last, args=(self.Oja_Ernesti,)).start()
                         
-                        # ernesti_apina_kaivuu_kahva = threading.Thread(target=moving_monkey.dig)
 
                 if self.Nappi_ernesti_kaiva.button_rect.collidepoint(mouse_pos):
                     # ernesti_apina_kaivuu_kahva.start()
                     if monkeys_ernesti:
                         digging_monkey = monkeys_ernesti[0]
-                        digging_monkey.kaivuu_kahva.start()
+                        if digging_monkey.kaivuu_kahva != None:
+                            digging_monkey.kaivuu_kahva.start()
 
 
 
