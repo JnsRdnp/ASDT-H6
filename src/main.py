@@ -11,7 +11,6 @@ from button import Button
 
 monkeys = []
 monkeys_ernesti = []
-ernesti_kaivuu_kahva = None
 
 # Game class
 class Game:

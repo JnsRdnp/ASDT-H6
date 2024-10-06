@@ -42,9 +42,7 @@ class Monkey(pygame.sprite.Sprite):
         print("Initial ditch matrix:")
         print(Ditch.ditch_matrix)
 
-        for i in range(100):  # Repeat the digging process 100 times
-            if self.main_running[0] == False:
-                break
+        while self.apina_kaivaa == True and self.main_running[0] == True:  # Repeat the digging process 100 times'
             time.sleep(self.time_to_dig)  # Wait for the specified digging time
 
             # Find the indices of the last four '1's
