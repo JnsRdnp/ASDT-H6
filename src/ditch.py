@@ -5,8 +5,10 @@ class Ditch(pygame.sprite.Sprite):
     def __init__(self,x,y, distance ,ppu=1):
         super().__init__()
         self.ppu = ppu  # Pixels per unit
-        self.width_units = 1  # Width in units
+        self.width_units = 3  # Width in units
         self.height_units = distance   # Height in units (20 units * 3 pixels/unit = 60 pixels)
+
+        self.one_meter = distance/100
         
         # Create a 20x6 matrix for the pool
         self.pool_matrix = np.ones((self.height_units, self.width_units), dtype=int)

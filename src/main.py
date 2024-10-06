@@ -33,6 +33,8 @@ class Game:
         self.Oja_Ernesti = Ditch(self.Allas.rect.centerx-70,self.Saari.rect.top, self.pool_northside_distance)
         print(self.pool_northside_distance)
 
+        self.Oja_Kernesti = Ditch(self.Allas.rect.centerx+60,self.Saari.rect.top, self.pool_northside_distance)
+
 
     def process_input(self):
         # Event handling
@@ -50,6 +52,7 @@ class Game:
         self.Saari.draw(self.screen)
         self.Allas.draw(self.screen)
         self.Oja_Ernesti.draw(self.screen)
+        self.Oja_Kernesti.draw(self.screen)
 
         # Draw game objects here
         # Example: pygame.draw.rect(self.screen, self.black, (50, 50, 100, 100))
