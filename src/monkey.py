@@ -36,11 +36,11 @@ class Monkey(pygame.sprite.Sprite):
         screen.blit(self.resized_image, self.rect)
 
         # Create the text surface for the current index
-        if self.current_index is not None:
-            index_text = f"Index: {self.current_index}"
-            text_surface = self.font.render(index_text, True, (255, 255, 255))  # White text color
-            text_rect = text_surface.get_rect(center=(self.rect.centerx, self.rect.bottom + 10))  # Position below the monkey
-            screen.blit(text_surface, text_rect)
+        # if self.current_index is not None:
+        #     index_text = f"Index: {self.current_index}"
+        #     text_surface = self.font.render(index_text, True, (255, 255, 255))  # White text color
+        #     text_rect = text_surface.get_rect(center=(self.rect.centerx, self.rect.bottom + 10))  # Position below the monkey
+        #     screen.blit(text_surface, text_rect)
 
     def dig(self, Ditch):
         self.apina_kaivaa = True

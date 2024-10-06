@@ -118,9 +118,9 @@ class Game:
                 if self.Nappi_kernesti_kaiva.button_rect.collidepoint(mouse_pos):
                     # ernesti_apina_kaivuu_kahva.start()
                     if monkeys_kernesti:
-                        digging_monkey = monkeys_kernesti[0]
-                        if digging_monkey.kaivuu_kahva != None:
-                            digging_monkey.kaivuu_kahva.start()
+                        for monkey in monkeys_kernesti:
+                            if monkey.apina_kaivaa == False and monkey.kaivuu_kahva != None:
+                                monkey.kaivuu_kahva.start()
 
 
     def update(self):
