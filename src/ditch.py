@@ -22,6 +22,8 @@ class Ditch(pygame.sprite.Sprite):
         self.pool_color = (255, 255, 255)  # White
 
         self.pool_color_digged = (0, 0, 0) # Black
+
+        self.pool_color_over_digged = (255, 0, 0) # Red
  
         # Position and size
         self.rect = pygame.Rect(x, y, self.width_units * self.ppu, self.height_units * self.ppu)
@@ -40,6 +42,12 @@ class Ditch(pygame.sprite.Sprite):
                                       self.ppu, self.ppu))
                 if self.ditch_matrix[row, col] == 0:  # Check if the matrix value is 0
                     pygame.draw.rect(screen, self.pool_color_digged,
+                                     (self.rect.x + col * self.ppu,
+                                      self.rect.y + row * self.ppu,
+                                      self.ppu, self.ppu))
+                    
+                if self.ditch_matrix[row, col] < 0:  # Check if the matrix value is 0
+                    pygame.draw.rect(screen, self.pool_color_over_digged,
                                      (self.rect.x + col * self.ppu,
                                       self.rect.y + row * self.ppu,
                                       self.ppu, self.ppu))

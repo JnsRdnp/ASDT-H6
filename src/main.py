@@ -69,7 +69,11 @@ class Game:
         for i in range(20):  # Create 20 monkeys
             x = monkey_start_x + (i % 5) * monkey_spacing  # Arrange in 5 columns
             y = monkey_start_y + (i // 5) * monkey_spacing  # Arrange in rows
-            monkey = Monkey(30,30,(x, y), self.running)  # Instantiate a Monkey object
+
+            # Alternate side based on the index
+            side = "Right" if i % 2 == 0 else "Left"
+
+            monkey = Monkey(30, 30, (x, y), self.running, side=side)  # Instantiate a Monkey object
             monkeys.append(monkey)  # Add to the list of monkeys
 
 
@@ -107,9 +111,9 @@ class Game:
                 if self.Nappi_ernesti_kaiva.button_rect.collidepoint(mouse_pos):
                     # ernesti_apina_kaivuu_kahva.start()
                     if monkeys_ernesti:
-                        digging_monkey = monkeys_ernesti[0]
-                        if digging_monkey.kaivuu_kahva != None:
-                            digging_monkey.kaivuu_kahva.start()
+                        for monkey in monkeys_ernesti:
+                            if monkey.apina_kaivaa == False and monkey.kaivuu_kahva != None:
+                                monkey.kaivuu_kahva.start()
 
                 if self.Nappi_kernesti_kaiva.button_rect.collidepoint(mouse_pos):
                     # ernesti_apina_kaivuu_kahva.start()

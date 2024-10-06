@@ -5,7 +5,7 @@ import numpy as np
 
 class Monkey(pygame.sprite.Sprite):
 
-    def __init__(self, width, height, location, main_running):
+    def __init__(self, width, height, location, main_running, side="Right"):
         pygame.sprite.Sprite.__init__(self)  # Call Sprite initializer
         self.image = pygame.image.load("./assets/apina.png")
         self.resized_image = pygame.transform.scale(self.image, (width, height))
@@ -22,6 +22,14 @@ class Monkey(pygame.sprite.Sprite):
         self.kaivuu_kahva = None
         self.apina_kaivaa = False
         self.ditch = None
+        
+        
+
+        if side == "Left":
+            self.sidex = 30
+        else:
+            self.sidex = 0
+
 
     def draw(self, screen):
         # Draw the monkey image
@@ -42,8 +50,8 @@ class Monkey(pygame.sprite.Sprite):
         print("Initial ditch matrix:")
         print(Ditch.ditch_matrix)
 
-        while self.apina_kaivaa == True and self.main_running[0] == True:  # Repeat the digging process 100 times'
-            time.sleep(self.time_to_dig)  # Wait for the specified digging time
+        while self.apina_kaivaa and self.main_running[0]:  # Continue digging while apina_kaivaa is True and the main program is running
+            
 
             # Find the indices of the last four '1's
             indices = np.argwhere(Ditch.ditch_matrix == 1)  # Get indices of all '1's
@@ -52,9 +60,10 @@ class Monkey(pygame.sprite.Sprite):
                 # Get the last four indices
                 last_four_indices = indices[-4:]  # Get the last four positions
 
-                # Change the values at these indices to 0
+                # Decrement the values at these indices by 1
+                time.sleep(self.time_to_dig)  # Wait for the specified digging time
                 for row, col in last_four_indices:
-                    Ditch.ditch_matrix[row, col] = 0
+                    Ditch.ditch_matrix[row, col] -= 1  # Change value to one less
 
                 print(f"Digging at positions: {last_four_indices.tolist()}")  # Print the positions dug
                 
@@ -77,7 +86,7 @@ class Monkey(pygame.sprite.Sprite):
         self.ditch = self.get_last_ditch_position(Ditch)
         self.target_location, self.current_index = self.ditch
 
-        self.rect.bottomleft = (self.target_location[0],self.target_location[1]+10)
+        self.rect.bottomleft = (self.target_location[0]-self.sidex,self.target_location[1]+10)
 
 
     def move_to_last(self, Ditch):
@@ -85,7 +94,7 @@ class Monkey(pygame.sprite.Sprite):
         self.ditch = self.get_last_ditch_position(Ditch)
         self.target_location, self.current_index = self.ditch
         # Calculate the total distance to move in x and y directions
-        delta_x = self.target_location[0] - self.rect.x
+        delta_x = self.target_location[0] - self.rect.x - self.sidex
         delta_y = self.target_location[1]-20 - self.rect.y
 
         # Determine the number of steps to take for each direction
@@ -112,29 +121,35 @@ class Monkey(pygame.sprite.Sprite):
         self.kaivuu_kahva = threading.Thread(target=self.dig, args=(Ditch,))
 
 
-
-
-    def get_first_ditch_position(self, ditch):
-        """Find the first available '1' in the ditch matrix and return its position."""
-        for row in range(ditch.ditch_matrix.shape[0]):
-            for col in range(ditch.ditch_matrix.shape[1]):
-                if ditch.ditch_matrix[row, col] == 1:  # Find the first 1
-                    # Calculate world coordinates of the matrix position
-                    x = ditch.rect.x + col * ditch.ppu
-                    y = ditch.rect.y + row * ditch.ppu
-                    print("First ditch pos: ", x,y)
-                    return (x, y)
-        return None  # If no position is founds 
     
     def get_last_ditch_position(self, ditch):
-        """Find the last available '1' in the ditch matrix and return its position and matrix index."""
+        """Find the last available group of four adjacent tiles with values greater than 0 in the ditch matrix and return their position and matrix index."""
         # Reverse iteration: Start from the last row and last column
         for row in range(ditch.ditch_matrix.shape[0] - 1, -1, -1):
             for col in range(ditch.ditch_matrix.shape[1] - 1, -1, -1):
-                if ditch.ditch_matrix[row, col] == 1:  # Find the last 1
-                    # Calculate world coordinates of the matrix position
+                if self.check_adjacent_tiles(ditch, row, col):
+                    # Calculate world coordinates of the matrix position for the first tile of the group
                     x = ditch.rect.x + col * ditch.ppu
                     y = ditch.rect.y + row * ditch.ppu
-                    print("Last ditch pos: ", x, y)
-                    return (x, y), (row, col)  # Return both position and matrix index
+                    print("Last ditch pos (adjacent tiles): ", x, y)
+                    return (x, y), (row, col)  # Return the position of the first tile and its matrix index
+
         return None, None  # If no position is found
+
+    def check_adjacent_tiles(self, ditch, row, col):
+        """Check if there are four adjacent tiles (horizontally, vertically, or diagonally) with values greater than 0."""
+        # Check horizontally (right)
+        if col + 3 < ditch.ditch_matrix.shape[1] and all(ditch.ditch_matrix[row, col+i] > 0 for i in range(4)):
+            return True
+        # Check vertically (down)
+        if row + 3 < ditch.ditch_matrix.shape[0] and all(ditch.ditch_matrix[row+i, col] > 0 for i in range(4)):
+            return True
+        # Check diagonally (down-right)
+        if row + 3 < ditch.ditch_matrix.shape[0] and col + 3 < ditch.ditch_matrix.shape[1] and \
+        all(ditch.ditch_matrix[row+i, col+i] > 0 for i in range(4)):
+            return True
+        # Check diagonally (down-left)
+        if row + 3 < ditch.ditch_matrix.shape[0] and col - 3 >= 0 and \
+        all(ditch.ditch_matrix[row+i, col-i] > 0 for i in range(4)):
+            return True
+        return False
