@@ -11,6 +11,7 @@ from button import Button
 
 monkeys = []
 monkeys_ernesti = []
+monkeys_kernesti = []
 
 # Game class
 class Game:
@@ -48,13 +49,19 @@ class Game:
         # Napit
         self.Nappi_ernesti_kutsu = Button(self.black,10,500,20,"Ernesti hae apina töihin")
 
-        self.Nappi_ernesti_kaiva = Button(self.black,10,550,20, "Kaiva apina")
+        self.Nappi_ernesti_kaiva = Button(self.black,10,550,20, "Kaiva ernestin apina")
+
+        self.Nappi_kernesti_kutsu = Button(self.black,500,500,20,"Kernesti hae apina töihin")
+
+        self.Nappi_kernesti_kaiva = Button(self.black,500,550,20, "Kaiva kernestin apina")
 
         self.create_monkeys()
 
     def create_monkeys(self):
         global monkeys
         global monkeys_ernesti
+        global monkeys_kernesti
+        
         monkey_start_x = self.Metsa.rect.left + 10  # Starting position x
         monkey_start_y = self.Metsa.rect.top + 10  # Starting position y
         monkey_spacing = 25 # Space between monkeys
@@ -80,14 +87,22 @@ class Game:
 
                 # checks if mouse position is over the button
                 if self.Nappi_ernesti_kutsu.button_rect.collidepoint(mouse_pos):
-                    print("Apina hommiin stna")
+                    print("Ernesti Apina hommiin stna")
                     ## MOVE ONE MONKEY TO Oja_Ernesti
                     if monkeys:
                         # Otetaan ensimmäinen apina
                         moving_monkey = monkeys.pop(0)  # Otetaan pois listasta ja siirretään ernestin listaan
                         monkeys_ernesti.append(moving_monkey)
                         threading.Thread(target= moving_monkey.move_to_last, args=(self.Oja_Ernesti,)).start()
-                        
+
+                if self.Nappi_kernesti_kutsu.button_rect.collidepoint(mouse_pos):
+                    print("Kernesti Apina hommiin stna")
+                    ## MOVE ONE MONKEY TO Oja_Ernesti
+                    if monkeys:
+                        # Otetaan ensimmäinen apina
+                        moving_monkey = monkeys.pop(0)  # Otetaan pois listasta ja siirretään ernestin listaan
+                        monkeys_kernesti.append(moving_monkey)
+                        threading.Thread(target= moving_monkey.move_to_last, args=(self.Oja_Kernesti,)).start()      
 
                 if self.Nappi_ernesti_kaiva.button_rect.collidepoint(mouse_pos):
                     # ernesti_apina_kaivuu_kahva.start()
@@ -96,7 +111,12 @@ class Game:
                         if digging_monkey.kaivuu_kahva != None:
                             digging_monkey.kaivuu_kahva.start()
 
-
+                if self.Nappi_kernesti_kaiva.button_rect.collidepoint(mouse_pos):
+                    # ernesti_apina_kaivuu_kahva.start()
+                    if monkeys_kernesti:
+                        digging_monkey = monkeys_kernesti[0]
+                        if digging_monkey.kaivuu_kahva != None:
+                            digging_monkey.kaivuu_kahva.start()
 
 
     def update(self):
@@ -113,11 +133,17 @@ class Game:
         self.Metsa.draw(self.screen)
         self.Nappi_ernesti_kutsu.draw(self.screen)
         self.Nappi_ernesti_kaiva.draw(self.screen)
+        self.Nappi_kernesti_kutsu.draw(self.screen)
+        self.Nappi_kernesti_kaiva.draw(self.screen)
+
 
         for monkey in monkeys:
             monkey.draw(self.screen) 
 
         for monkey in monkeys_ernesti:
+            monkey.draw(self.screen)
+
+        for monkey in monkeys_kernesti:
             monkey.draw(self.screen)
 
         # Update the display
