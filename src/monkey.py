@@ -46,7 +46,7 @@ class Monkey(pygame.sprite.Sprite):
         #     text_rect = text_surface.get_rect(center=(self.rect.centerx, self.rect.bottom + 10))  # Position below the monkey
         #     screen.blit(text_surface, text_rect)
 
-    def dig(self, Ditch, start=True):
+    def dig(self, Ditch, start_col=None, start_row=None):
         self.apina_kaivaa = True
         self.time_to_dig = 1  # Initial time in seconds between digs
         self.stamina_multiplier = 2  # Time to dig multiplies by 2 every time
@@ -54,36 +54,80 @@ class Monkey(pygame.sprite.Sprite):
         print("Initial ditch matrix:")
         print(Ditch.ditch_matrix)
 
-        while self.apina_kaivaa and self.main_running[0]:  # Continue digging while apina_kaivaa is True and the main program is running
-            
+        if start_col is None and start_row is None:
+            # Start digging normally from the last available positions
+            while self.apina_kaivaa and self.main_running[0]:
+                # Find the indices of the last four '1's
+                indices = np.argwhere(Ditch.ditch_matrix == 1)  # Get indices of all '1's
+                
+                if len(indices) >= 4:  # Ensure there are at least four '1's to change
+                    # Get the last four indices
+                    last_four_indices = indices[-4:]  # Get the last four positions
 
-            # Find the indices of the last four '1's
-            indices = np.argwhere(Ditch.ditch_matrix == 1)  # Get indices of all '1's
+                    # Decrement the values at these indices by 1
+                    time.sleep(self.time_to_dig)  # Wait for the specified digging time
+                    for row, col in last_four_indices:
+                        Ditch.ditch_matrix[row, col] -= 1  # Change value to one less
 
-            if len(indices) >= 4:  # Ensure there are at least four '1's to change
-                # Get the last four indices
-                last_four_indices = indices[-4:]  # Get the last four positions
+                    print(f"Digging at positions: {last_four_indices.tolist()}")  # Print the positions dug
+                    
+                    # Update the current index to the last position dug
+                    self.current_index = (last_four_indices[-1][0], last_four_indices[-1][1])
 
+                else:
+                    print("Not enough '1's to dig. Stopping digging.")
+                    break  # Exit if there are fewer than 4 '1's
+
+                # Double the time to dig for the next iteration
+                self.time_to_dig *= self.stamina_multiplier
+                self.update_position(Ditch)
+
+            print("Updated ditch matrix:")
+            print(Ditch.ditch_matrix)
+        else:
+            # Start digging from the specified starting position
+            indices_to_dig = []
+
+            # Get indices of all '1's in the specified column
+            column_indices = np.argwhere(Ditch.ditch_matrix[:, start_col] == 1)
+
+            # Check if the specified starting row is valid for digging
+            if start_row in column_indices[:, 0]:  # Ensure the starting position is a '1'
+                indices_to_dig.append((start_row, start_col))  # Add the starting position
+                
+                # Collect the three indices above the starting position
+                for i in range(1, 4):  # Get up to three indices above the starting position
+                    above_row = start_row - i
+                    if above_row >= 0 and (above_row, start_col) in column_indices.tolist():
+                        indices_to_dig.append((above_row, start_col))
+
+            while self.apina_kaivaa and self.main_running[0]:
                 # Decrement the values at these indices by 1
                 time.sleep(self.time_to_dig)  # Wait for the specified digging time
-                for row, col in last_four_indices:
-                    Ditch.ditch_matrix[row, col] -= 1  # Change value to one less
-
-                print(f"Digging at positions: {last_four_indices.tolist()}")  # Print the positions dug
                 
-                # Update the current index to the last position dug
-                self.current_index = (last_four_indices[-1][0], last_four_indices[-1][1])
+                # Store positions being dug
+                dug_positions = []
+                for row, col in indices_to_dig:
+                    if Ditch.ditch_matrix[row, col] > 0:  # Ensure the position is diggable
+                        Ditch.ditch_matrix[row, col] -= 1  # Change value to one less
+                        dug_positions.append((row, col))  # Track the position dug
+                        print(f"Digging at position: ({row}, {col})")  # Print the position dug
+                        print(Ditch.ditch_matrix)
+                        
+                        # Update the current index to the last position dug
+                        self.current_index = (row, col)
 
-            else:
-                print("Not enough '1's to dig. Stopping digging.")
-                break  # Exit if there are fewer than 4 '1's
+                # Print the positions dug
+                if dug_positions:
+                    print(f"Digging at positions: {dug_positions}")  # Print the positions dug
 
-            # Double the time to dig for the next iteration
-            self.time_to_dig *= self.stamina_multiplier
-            self.update_position(Ditch)
+                # Double the time to dig for the next iteration
+                self.time_to_dig *= self.stamina_multiplier
+                # self.update_position(Ditch)  # Update position after digging
 
-        print("Updated ditch matrix:")
-        print(Ditch.ditch_matrix)
+            print("Updated ditch matrix:")
+            print(Ditch.ditch_matrix)
+
 
     def random_dig(self, Ditch):
         # Get the number of rows and columns in the ditch matrix
@@ -95,6 +139,9 @@ class Monkey(pygame.sprite.Sprite):
 
         print("rows: ", odd_row, "cols: ", num_cols)
         self.update_position(Ditch, odd_row, col)
+        self.dig(Ditch, col, odd_row)
+
+
 
 
         

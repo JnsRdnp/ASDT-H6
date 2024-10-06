@@ -146,7 +146,7 @@ class Game:
                         # Otetaan ensimmäinen apina ja sijoitetaan satunnaiseen paikkaan
                         moving_monkey = monkeys.pop(0)  # Otetaan pois listasta ja siirretään ernestin listaan
                         monkeys_kernesti.append(moving_monkey)
-                        moving_monkey.random_dig(self.Oja_Ernesti)
+                        threading.Thread(target=moving_monkey.random_dig, args=(self.Oja_Ernesti,)).start()   
                     
 
 
