@@ -5,16 +5,19 @@ import numpy as np
 
 class Monkey(pygame.sprite.Sprite):
 
-    def __init__(self, width, height, location):
+    def __init__(self, width, height, location, main_running):
         pygame.sprite.Sprite.__init__(self)  # Call Sprite initializer
         self.image = pygame.image.load("./assets/apina.png")
         self.resized_image = pygame.transform.scale(self.image, (width, height))
+
+        self.main_running = main_running
 
         self.rect = self.resized_image.get_rect()
         self.rect.left, self.rect.top = location
 
         self.current_index = None
         self.font = pygame.font.SysFont(None, 24)  # Set up the font for rendering text
+
 
         self.kaivuu_kahva = None
         self.apina_kaivaa = False
@@ -33,13 +36,15 @@ class Monkey(pygame.sprite.Sprite):
 
     def dig(self, Ditch):
         self.apina_kaivaa = True
-        self.time_to_dig = 1  # Time in seconds between digs
+        self.time_to_dig = 1  # Initial time in seconds between digs
         self.stamina_multiplier = 2  # Example of a stamina multiplier
 
         print("Initial ditch matrix:")
         print(Ditch.ditch_matrix)
 
-        for i in range(100):  # Repeat the digging process 5 times
+        for i in range(100):  # Repeat the digging process 100 times
+            if self.main_running[0] == False:
+                break
             time.sleep(self.time_to_dig)  # Wait for the specified digging time
 
             # Find the indices of the last four '1's
@@ -55,15 +60,19 @@ class Monkey(pygame.sprite.Sprite):
 
                 print(f"Digging at positions: {last_four_indices.tolist()}")  # Print the positions dug
                 
-                # You might want to update the current index here if necessary
+                # Update the current index to the last position dug
                 self.current_index = (last_four_indices[-1][0], last_four_indices[-1][1])
 
             else:
                 print("Not enough '1's to dig. Stopping digging.")
                 break  # Exit if there are fewer than 4 '1's
 
+            # Double the time to dig for the next iteration
+            self.time_to_dig *= 2
+
         print("Updated ditch matrix:")
         print(Ditch.ditch_matrix)
+
             
 
 

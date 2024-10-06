@@ -31,7 +31,7 @@ class Game:
 
         # Game state variables
         global running
-        self.running = True
+        self.running = [True]
 
         # Init objects
         self.Saari = Island(600,500,(self.width/7,50))
@@ -63,7 +63,7 @@ class Game:
         for i in range(20):  # Create 20 monkeys
             x = monkey_start_x + (i % 5) * monkey_spacing  # Arrange in 5 columns
             y = monkey_start_y + (i // 5) * monkey_spacing  # Arrange in rows
-            monkey = Monkey(30,30,(x, y))  # Instantiate a Monkey object
+            monkey = Monkey(30,30,(x, y), self.running)  # Instantiate a Monkey object
             monkeys.append(monkey)  # Add to the list of monkeys
 
 
@@ -74,7 +74,8 @@ class Game:
         global ernesti_apina_kaivuu_kahva
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.running = False
+                self.running[0] = False
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = event.pos  # gets mouse position
 
@@ -125,7 +126,7 @@ class Game:
 
     def run(self):
         # Main game loop
-        while self.running:
+        while self.running[0]==True:
             self.process_input()
             self.update()
             self.render()
