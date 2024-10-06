@@ -102,12 +102,13 @@ class Monkey(pygame.sprite.Sprite):
                     if Ditch.ditch_matrix[self.current_row,self.current_col] > 0:
                         self.update_position(Ditch, start_col=0, start_row=self.current_row)
 
-                        time.sleep(1)
+                        time.sleep(self.time_to_dig)
                         Ditch.ditch_matrix[self.current_row,self.current_col] -= 1
                         Ditch.ditch_matrix[self.current_row, self.current_col+1] -= 1
                         Ditch.ditch_matrix[self.current_row-1, self.current_col] -= 1
                         Ditch.ditch_matrix[self.current_row-1, self.current_col+1] -= 1
                         self.sand_sound.play()
+                        self.time_to_dig *= self.stamina_multiplier
 
                         print(Ditch.ditch_matrix)
 
@@ -118,8 +119,20 @@ class Monkey(pygame.sprite.Sprite):
                         self.update_position(Ditch, start_col=0, start_row=self.current_row)
                 
                 else:
-                    print("Valmista")
-                    break
+                    indices = np.argwhere(Ditch.ditch_matrix == 1)  # Get indices of all '1's
+                    
+                    if len(indices) >= 4:  # Ensure there are at least four '1's to change
+                        # Get the last four indices
+                        last_four_indices = indices[-4:]  # Get the last four positions
+                        time.sleep(self.time_to_dig)  # Wait for the specified digging time
+                        for row, col in last_four_indices:
+                            Ditch.ditch_matrix[row, col] -= 1  # Change value to one less
+                            self.sand_sound.play()
+                        self.time_to_dig *= self.stamina_multiplier
+                    else:
+
+                        print("Valmista")
+                        break
                 
 
 
