@@ -73,7 +73,7 @@ class Monkey(pygame.sprite.Sprite):
                     for row, col in last_four_indices:
                         Ditch.ditch_matrix[row, col] -= 1  # Change value to one less
                         self.sand_sound.play()
-                        
+
                     print(f"Digging at positions: {last_four_indices}")  # Print the positions dug
                     
                     # Update the current index to the last position dug
@@ -91,9 +91,37 @@ class Monkey(pygame.sprite.Sprite):
             print(Ditch.ditch_matrix)
         else:
             # Start digging from specified start_col and start_row
+            self.current_col = start_col
+            self.current_row = start_row
+            print(self.current_row)
+
             while self.apina_kaivaa and self.main_running[0]:
-                pass
+
+                if self.current_row >= 1:
+
+                    if Ditch.ditch_matrix[self.current_row,self.current_col] > 0:
+                        self.update_position(Ditch, start_col=0, start_row=self.current_row)
+
+                        time.sleep(1)
+                        Ditch.ditch_matrix[self.current_row,self.current_col] -= 1
+                        Ditch.ditch_matrix[self.current_row, self.current_col+1] -= 1
+                        Ditch.ditch_matrix[self.current_row-1, self.current_col] -= 1
+                        Ditch.ditch_matrix[self.current_row-1, self.current_col+1] -= 1
+                        self.sand_sound.play()
+
+                        print(Ditch.ditch_matrix)
+
+                        self.current_row -= 2
+
+                    else:
+                        self.current_row -= 2
+                        self.update_position(Ditch, start_col=0, start_row=self.current_row)
                 
+                else:
+                    print("Valmista")
+                    break
+                
+
 
     def random_dig(self, Ditch):
         # Get the number of rows and columns in the ditch matrix
@@ -108,8 +136,6 @@ class Monkey(pygame.sprite.Sprite):
         self.dig(Ditch, col, odd_row)
 
 
-
-
         
             
     def update_position(self, Ditch, start_col=None, start_row=None):
@@ -118,7 +144,7 @@ class Monkey(pygame.sprite.Sprite):
             self.target_location, self.current_index = self.ditch
             self.rect.bottomleft = (self.target_location[0]-self.sidex,self.target_location[1]+10)
         else:
-            self.ditch_start = self.get_ditch_position(Ditch,start_col,start_row)
+            self.ditch_start = self.get_ditch_position(Ditch,start_row,start_col)
             print("self.ditch_start: ", self.ditch_start)
             self.rect.bottomleft = (self.ditch_start[0]-self.sidex, self.ditch_start[1]+10)
 
