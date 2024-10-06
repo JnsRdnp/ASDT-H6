@@ -60,30 +60,7 @@ class Game:
             monkey = Monkey(30,30,(x, y))  # Instantiate a Monkey object
             monkeys.append(monkey)  # Add to the list of monkeys
 
-    def get_first_ditch_position(self, ditch):
-        """Find the first available '1' in the ditch matrix and return its position."""
-        for row in range(ditch.ditch_matrix.shape[0]):
-            for col in range(ditch.ditch_matrix.shape[1]):
-                if ditch.ditch_matrix[row, col] == 1:  # Find the first 1
-                    # Calculate world coordinates of the matrix position
-                    x = ditch.rect.x + col * ditch.ppu
-                    y = ditch.rect.y + row * ditch.ppu
-                    print("First ditch pos: ", x,y)
-                    return (x, y)
-        return None  # If no position is founds 
-    
-    def get_last_ditch_position(self, ditch):
-        """Find the last available '1' in the ditch matrix and return its position and matrix index."""
-        # Reverse iteration: Start from the last row and last column
-        for row in range(ditch.ditch_matrix.shape[0] - 1, -1, -1):
-            for col in range(ditch.ditch_matrix.shape[1] - 1, -1, -1):
-                if ditch.ditch_matrix[row, col] == 1:  # Find the last 1
-                    # Calculate world coordinates of the matrix position
-                    x = ditch.rect.x + col * ditch.ppu
-                    y = ditch.rect.y + row * ditch.ppu
-                    print("Last ditch pos: ", x, y)
-                    return (x, y), (row, col)  # Return both position and matrix index
-        return None, None  # If no position is found
+
 
 
     def process_input(self):
@@ -103,10 +80,7 @@ class Game:
                         moving_monkey = monkeys.pop(0)  # Remove it from the list
                         monkeys_ernesti.append(moving_monkey)
                         # Get the first (last in matrix) available position in the ditch
-                        last_position, last_index = self.get_last_ditch_position(self.Oja_Ernesti)
-
-                        if last_position and last_index:
-                            moving_monkey.move(last_position, last_index)
+                        moving_monkey.move_to_last(self.Oja_Ernesti)
 
 
 
