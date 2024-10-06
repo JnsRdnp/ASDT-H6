@@ -1,16 +1,14 @@
-import matplotlib.pyplot as plt
-import numpy as np
+import pygame
 
-class Island:
-    def __init__(self, size):
-        self.size = size
-        self.color = [255, 255, 0]  # Yellow
-        self.grid = np.zeros((self.size, self.size, 3), dtype=int)
-        self.grid[:, :] = self.color  # Fill the island with yellow
+class Island(pygame.sprite.Sprite):
 
-    def draw(self):
-        """Draws the island on the plot."""
-        plt.imshow(self.grid, extent=(0, self.size, 0, self.size))
-        plt.xlim(0, self.size)
-        plt.ylim(0, self.size)
-        plt.axis('off')
+    def __init__(self, width, height, location):
+        pygame.sprite.Sprite.__init__(self)  #call Sprite initializer
+        self.image = pygame.image.load("./assets/island.png")
+        self.resized_image = pygame.transform.scale(self.image,(width, height))
+
+        self.rect = self.resized_image.get_rect()
+        self.rect.left, self.rect.top = location
+
+    def draw(self,screen):
+        screen.blit(self.resized_image, self.rect)
