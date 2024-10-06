@@ -37,7 +37,7 @@ class Monkey(pygame.sprite.Sprite):
     def dig(self, Ditch):
         self.apina_kaivaa = True
         self.time_to_dig = 1  # Initial time in seconds between digs
-        self.stamina_multiplier = 2  # Example of a stamina multiplier
+        self.stamina_multiplier = 2  # Time to dig multiplies by 2 every time
 
         print("Initial ditch matrix:")
         print(Ditch.ditch_matrix)
@@ -66,12 +66,18 @@ class Monkey(pygame.sprite.Sprite):
                 break  # Exit if there are fewer than 4 '1's
 
             # Double the time to dig for the next iteration
-            self.time_to_dig *= 2
+            self.time_to_dig *= self.stamina_multiplier
+            self.update_position(Ditch)
 
         print("Updated ditch matrix:")
         print(Ditch.ditch_matrix)
 
             
+    def update_position(self, Ditch):
+        self.ditch = self.get_last_ditch_position(Ditch)
+        self.target_location, self.current_index = self.ditch
+
+        self.rect.bottomleft = (self.target_location[0],self.target_location[1]+10)
 
 
     def move_to_last(self, Ditch):
